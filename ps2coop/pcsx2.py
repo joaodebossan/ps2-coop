@@ -320,12 +320,12 @@ def pid_path(game_dir: Path) -> Path:
 
 def ensure_data(game_dir: Path) -> Path:
     """Roda -testconfig uma vez para o PCSX2 criar INI e pastas."""
-    exe = find_executable()
-    if not exe:
-        raise RuntimeError("PCSX2 não instalado.")
     ini = ini_path(game_dir)
     if ini.exists():
         return ini
+    exe = find_executable()
+    if not exe:
+        raise RuntimeError("PCSX2 não instalado.")
 
     env = os.environ.copy()
     if not env.get("DISPLAY") and not env.get("WAYLAND_DISPLAY"):

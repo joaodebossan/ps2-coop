@@ -53,7 +53,7 @@ class DesktopTest(unittest.TestCase):
         self.assertIn("Name=Jogo", text)
         self.assertIn(f'Path={game}', text)
         self.assertIn("--game", text)
-        self.assertIn('app.py"', text)  # caminho com espaços citado
+        self.assertIn(f'--game "{game}"', text)  # pasta com espaços citada
         self.assertTrue(desktop.existing(game, "Jogo: teste"))
         desktop.remove("Jogo: teste")
         self.assertFalse(desktop.existing(game, "Jogo: teste"))
