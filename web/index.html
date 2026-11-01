@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2eee6">
+  <meta name="description" content="PS2 Co-op: servidor local de co-op de PS2 com PCSX2 e MoonlightWeb, convites por link e PIN, controles e saves.">
+  <meta name="ps2coop-token" content="__PS2COOP_TOKEN__">
+  <title>PS2 Co-op</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/icon.png" type="image/png">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/theme.js"></script>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <img src="/icon.svg" alt="" class="brand-icon" width="48" height="48">
+      <span class="brand-copy">
+        <span class="brand-kicker">PS2 Co-op</span>
+        <span class="brand-title" id="game-title">Carregando…</span>
+        <span class="brand-sub">qualquer jogo de PS2 · 1 a 4 jogadores</span>
+      </span>
+    </a>
+    <div class="topbar-actions">
+      <div class="theme-switch" role="group" aria-label="Tema da interface">
+        <button type="button" class="theme-choice" data-theme-choice="system" aria-pressed="false" title="Seguir o tema do sistema">Auto</button>
+        <button type="button" class="theme-choice" data-theme-choice="light" aria-pressed="false" title="Tema claro">Claro</button>
+        <button type="button" class="theme-choice" data-theme-choice="dark" aria-pressed="false" title="Tema escuro acinzentado">Escuro</button>
+      </div>
+      <button id="open-folder" class="btn btn-ghost btn-sm" type="button">Pasta</button>
+      <button id="open-admin" class="btn btn-ghost btn-sm" type="button">MoonlightWeb</button>
+    </div>
+  </header>
+
+  <div class="statusbar" aria-label="Estado do sistema">
+    <div class="status-chips">
+      <span class="chip" id="chip-moon">MoonlightWeb</span>
+      <span class="chip" id="chip-pcsx2">PCSX2</span>
+      <span class="chip" id="chip-bios">BIOS</span>
+      <span class="chip" id="chip-pads">Controles</span>
+    </div>
+    <span class="statusbar-note" id="status-note">—</span>
+  </div>
+
+  <main class="page">
+    <section class="next-bar card" aria-live="polite">
+      <div class="next-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12h9"></path><path d="m10 6 6 6-6 6"></path><path d="M20 5v14"></path>
+        </svg>
+      </div>
+      <div class="next-bar-copy">
+        <span class="kicker">Próximo passo</span>
+        <h1 id="next-title">Carregando…</h1>
+        <p id="next-text" class="muted">Verificando o ambiente.</p>
+      </div>
+      <div class="next-state">
+        <span class="badge" id="next-badge">—</span>
+      </div>
+    </section>
+
+    <section class="card setup" id="setup-card" aria-labelledby="setup-title">
+      <div class="section-head">
+        <div>
+          <p class="kicker">Preparação</p>
+          <h2 id="setup-title">Deixe tudo pronto</h2>
+          <p class="muted">O app baixa o emulador e o servidor de streaming, configura os controles e cria o ícone — sem você editar arquivos.</p>
+        </div>
+        <span class="badge" id="setup-badge">—</span>
+      </div>
+
+      <div class="auto-banner" id="auto-banner" hidden>
+        <div class="auto-spinner" id="auto-spinner" aria-hidden="true"></div>
+        <div class="auto-copy">
+          <strong id="auto-title">Preparação automática</strong>
+          <span id="auto-detail" class="muted">—</span>
+          <div class="progress" id="auto-progress"><span id="auto-bar"></span></div>
+        </div>
+        <button class="btn btn-sm btn-ghost" id="auto-retry" type="button" hidden>Tentar de novo</button>
+      </div>
+
+      <div class="setup-grid">
+        <div class="setup-item" id="item-pcsx2">
+          <div class="setup-head"><strong>PCSX2</strong><span class="badge" id="pcsx2-badge">—</span></div>
+          <p class="setup-detail" id="pcsx2-detail">Emulador portátil, sem instalar nada no sistema.</p>
+          <div class="job" id="pcsx2-job" hidden><div class="progress"><span></span></div><small></small></div>
+          <button class="btn btn-sm" id="install-pcsx2" type="button">Baixar PCSX2</button>
+        </div>
+        <div class="setup-item" id="item-moonlight">
+          <div class="setup-head"><strong>MoonlightWeb</strong><span class="badge" id="moonlight-badge">—</span></div>
+          <p class="setup-detail" id="moonlight-detail">Transmite a tela para os amigos entrarem pelo navegador.</p>
+          <div class="job" id="moonlight-job" hidden><div class="progress"><span></span></div><small></small></div>
+          <button class="btn btn-sm" id="install-moonlight" type="button">Instalar MoonlightWeb</button>
+        </div>
+        <div class="setup-item" id="item-bios">
+          <div class="setup-head"><strong>BIOS do PS2</strong><span class="badge" id="bios-badge">—</span></div>
+          <p class="setup-detail" id="bios-detail">Use a BIOS extraída do seu próprio console.</p>
+          <div class="bios-actions">
+            <select id="bios-candidates" class="select" aria-label="BIOS encontradas no sistema" hidden></select>
+            <button class="btn btn-sm" id="adopt-bios" type="button" hidden>Usar BIOS encontrada</button>
+            <label class="btn btn-sm btn-ghost file-btn">Enviar .bin
+              <input type="file" id="bios-file" accept=".bin,.rom0">
+            </label>
+          </div>
+        </div>
+        <div class="setup-item" id="item-shortcut">
+          <div class="setup-head"><strong>Atalho</strong><span class="badge" id="shortcut-badge">—</span></div>
+          <p class="setup-detail" id="shortcut-detail">Um ícone na área de trabalho para abrir este jogo.</p>
+          <button class="btn btn-sm" id="create-shortcut" type="button">Criar atalho</button>
+        </div>
+      </div>
+      <p class="hint">A BIOS e a ISO não são baixadas: use arquivos do seu próprio console e do seu jogo. O app cuida do resto.</p>
+    </section>
+
+    <div class="layout">
+      <div class="main-col">
+        <section class="card session" aria-labelledby="session-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Sessão</p>
+              <h2 id="session-title">Jogar com amigos</h2>
+              <p class="muted" id="session-mode">—</p>
+            </div>
+            <span class="badge" id="session-state">—</span>
+          </div>
+
+          <div class="config-grid">
+            <fieldset class="field">
+              <legend class="field-label">Jogo nesta pasta</legend>
+              <select id="game-select" class="select" aria-label="Jogo"></select>
+            </fieldset>
+            <fieldset class="field">
+              <legend class="field-label">Quantos jogadores?</legend>
+              <div class="segmented" id="players-seg" role="group" aria-label="Quantidade de jogadores">
+                <button type="button" class="segment" data-players="1"><strong>1</strong><small>solo</small></button>
+                <button type="button" class="segment" data-players="2"><strong>2</strong><small>dupla</small></button>
+                <button type="button" class="segment" data-players="3"><strong>3</strong><small>tripla</small></button>
+                <button type="button" class="segment" data-players="4"><strong>4</strong><small>quarteto</small></button>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="host-box">
+            <label class="switch-row" for="host-local">
+              <input type="checkbox" id="host-local">
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-copy"><strong>Host local</strong><small>Você joga neste PC com um controle físico. Desligado, até 3 amigos entram pelo navegador; ligado, até 3 amigos + você.</small></span>
+            </label>
+          </div>
+
+          <div class="flow" aria-label="Fluxo da sessão">
+            <span class="flow-step" id="flow-invites"><b>1</b> Convidar</span>
+            <span class="flow-arrow" aria-hidden="true">→</span>
+            <span class="flow-step" id="flow-guests"><b>2</b> Amigos entram</span>
+            <span class="flow-arrow" aria-hidden="true">→</span>
+            <span class="flow-step" id="flow-start"><b>3</b> Iniciar jogo</span>
+          </div>
+
+          <div class="controls-panel">
+            <div class="controls-number">
+              <strong id="pad-number">0</strong>
+              <span id="pad-need">/ 0 controles virtuais</span>
+            </div>
+            <div class="controls-copy">
+              <p id="pad-names">Conecte os clientes e aperte um botão em cada controle.</p>
+              <p class="field-hint">O PCSX2 precisa dos controles antes do boot. O app mapeia os controles virtuais e o controle físico do host automaticamente.</p>
+            </div>
+          </div>
+          <div class="pad-map" id="pad-map"></div>
+
+          <div class="actions">
+            <button id="create-invites" class="btn" type="button">1. Convidar amigos</button>
+            <button id="open-host" class="btn btn-ghost" type="button">Painel do host</button>
+            <button id="start-game" class="btn btn-primary" type="button">3. Iniciar jogo</button>
+            <button id="stop-game" class="btn btn-danger" type="button">Parar jogo</button>
+          </div>
+
+          <label class="force-row">
+            <input type="checkbox" id="force">
+            <span>Iniciar mesmo sem todos os controles/amigos (modo de teste)</span>
+          </label>
+
+          <p id="message" class="message" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="card invites" aria-labelledby="invites-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Convites</p>
+              <h2 id="invites-title">Amigos no navegador</h2>
+              <p class="muted">Cada amigo recebe um link e um PIN separado. O primeiro convidado também inicia a transmissão.</p>
+            </div>
+            <span class="badge" id="invite-badge">—</span>
+          </div>
+
+          <div class="invite-controls">
+            <label class="select-wrap">
+              <span class="field-label">Onde os amigos estão?</span>
+              <select id="invite-network" class="select">
+                <option value="auto">Automático (usa o link público se estiver ativo)</option>
+                <option value="lan">Somente LAN</option>
+              </select>
+            </label>
+            <button id="generate-invites" class="btn btn-primary" type="button">Gerar / atualizar convites</button>
+            <button id="revoke-invites" class="btn btn-danger" type="button">Revogar</button>
+          </div>
+
+          <p id="invite-hint" class="hint">Gera um convite por jogador remoto. Peça para cada amigo abrir o link, digitar o PIN e apertar um botão no controle antes de iniciar o jogo.</p>
+          <div id="invite-list" class="invite-list">
+            <p class="muted">Nenhum convite carregado.</p>
+          </div>
+        </section>
+
+        <section class="card help" aria-labelledby="help-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Guia rápido</p>
+              <h2 id="help-title">Jogar e salvar</h2>
+            </div>
+          </div>
+          <div class="help-grid">
+            <div class="help-col">
+              <h3 class="help-col-title">Como jogar</h3>
+              <ol class="help-list">
+                <li><span class="help-list-num">1</span><span><strong>Convide</strong> — gere o link e o PIN de cada amigo.</span></li>
+                <li><span class="help-list-num">2</span><span><strong>Conecte</strong> — cada amigo abre o link e aperta um botão no controle.</span></li>
+                <li><span class="help-list-num">3</span><span><strong>Inicie</strong> — o PCSX2 abre em tela cheia com todos os controles.</span></li>
+              </ol>
+            </div>
+            <div class="help-col">
+              <h3 class="help-col-title">Saves e segurança</h3>
+              <ul class="help-list">
+                <li><span class="help-list-num">•</span><span><strong>Backup automático</strong> ao parar o jogo.</span></li>
+                <li><span class="help-list-num">•</span><span><strong>Restaurar</strong> qualquer cópia na lista de saves.</span></li>
+                <li><span class="help-list-num">•</span><span><strong>Local</strong> — o portal só escuta em 127.0.0.1 e os convites são protegidos por PIN.</span></li>
+                <li><span class="help-list-num">•</span><span><strong>Sem BIOS/ISO pirata</strong> — o app não baixa nem distribui esses arquivos.</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="card preferences" aria-labelledby="preferences-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Preferências</p>
+              <h2 id="preferences-title">Aparência e manutenção</h2>
+              <p class="muted">O tema escuro é acinzentado, não preto. A escolha fica salva neste navegador.</p>
+            </div>
+          </div>
+          <div class="pref-grid">
+            <div class="pref-block">
+              <span class="field-label">Tema</span>
+              <div class="theme-options" role="group" aria-label="Tema">
+                <button type="button" class="theme-option" data-theme-choice="system">Sistema</button>
+                <button type="button" class="theme-option" data-theme-choice="light">Claro</button>
+                <button type="button" class="theme-option" data-theme-choice="dark">Escuro</button>
+              </div>
+            </div>
+            <div class="pref-block">
+              <span class="field-label">Diagnóstico</span>
+              <div class="pref-actions">
+                <button id="open-logs" class="btn btn-sm btn-ghost" type="button">Logs do app</button>
+                <button id="open-pcsx2-logs" class="btn btn-sm btn-ghost" type="button">Logs do PCSX2</button>
+                <button id="moonlight-start" class="btn btn-sm btn-ghost" type="button">Iniciar MoonlightWeb</button>
+                <button id="quit-app" class="btn btn-sm btn-danger" type="button">Fechar portal</button>
+              </div>
+            </div>
+          </div>
+          <p class="hint" id="about-line">PS2 Co-op local · PCSX2 e MoonlightWeb são projetos independentes. Feito para jogar com amigos na sua rede ou pela internet.</p>
+        </section>
+      </div>
+
+      <aside class="side-col">
+        <section class="card connection" aria-labelledby="connection-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Acesso</p>
+              <h2 id="connection-title">Conexão</h2>
+            </div>
+            <span class="badge" id="net-status">—</span>
+          </div>
+
+          <div class="link-row">
+            <div><span class="field-label">Na sua rede</span><code id="lan-link">—</code></div>
+            <button class="btn btn-ghost btn-sm" data-copy="lan-link" type="button">Copiar</button>
+          </div>
+          <div class="link-row">
+            <div><span class="field-label">Fora de casa</span><code id="public-link">—</code></div>
+            <button class="btn btn-ghost btn-sm" data-copy="public-link" type="button">Copiar</button>
+          </div>
+          <p class="hint" id="net-notice">O link de LAN funciona no mesmo roteador. Para fora de casa, o MoonlightWeb usa o link público e a rede precisa permitir UDP.</p>
+
+          <details class="help-details">
+            <summary>Se o vídeo não abrir fora de casa</summary>
+            <p>O MoonlightWeb usa UDP. Se a rede bloquear, libere as portas no roteador, use o link público do MoonlightWeb ou uma VPN como Tailscale.</p>
+          </details>
+        </section>
+
+        <section class="card checklist-card" aria-labelledby="checklist-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Antes do boot</p>
+              <h2 id="checklist-title">Checklist</h2>
+            </div>
+          </div>
+          <ul class="checklist">
+            <li id="chk-moon"><span class="dot" aria-hidden="true"></span>MoonlightWeb rodando</li>
+            <li id="chk-pcsx2"><span class="dot" aria-hidden="true"></span>PCSX2 instalado</li>
+            <li id="chk-bios"><span class="dot" aria-hidden="true"></span>BIOS configurada</li>
+            <li id="chk-iso"><span class="dot" aria-hidden="true"></span>Jogo encontrado</li>
+            <li id="chk-pads"><span class="dot" aria-hidden="true"></span>Controles prontos</li>
+          </ul>
+          <p class="hint">No modo host local, o primeiro controle é o físico deste PC. Os demais são os convidados.</p>
+        </section>
+
+        <section class="card saves" aria-labelledby="saves-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Progresso</p>
+              <h2 id="saves-title">Saves</h2>
+            </div>
+          </div>
+          <p class="muted">Backups do memory card. O app também salva automaticamente quando você para o jogo.</p>
+          <div class="actions compact">
+            <button id="backup" class="btn" type="button">Fazer backup agora</button>
+            <button id="open-saves" class="btn btn-ghost" type="button">Abrir pasta</button>
+          </div>
+          <ul class="backup-list" id="backup-list">
+            <li class="muted">Nenhum backup ainda.</li>
+          </ul>
+        </section>
+
+        <section class="card diagnostics" aria-labelledby="diagnostics-title">
+          <div class="section-head">
+            <div>
+              <p class="kicker">Sistema</p>
+              <h2 id="diagnostics-title">Diagnóstico</h2>
+            </div>
+          </div>
+          <dl class="diag-list">
+            <div><dt>Versão</dt><dd id="diag-version">—</dd></div>
+            <div><dt>Sistema</dt><dd id="diag-os">—</dd></div>
+            <div><dt>PCSX2</dt><dd id="diag-pcsx2">—</dd></div>
+            <div><dt>MoonlightWeb</dt><dd id="diag-moonlight">—</dd></div>
+            <div><dt>Porta HTTPS</dt><dd id="diag-port">—</dd></div>
+          </dl>
+          <p class="hint" id="diag-hint">Os logs ficam em <code>runtime/logs</code>.</p>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="footer">
+      <span>PS2 Co-op local · seus jogos, seus arquivos, seus amigos.</span>
+      <span>
+        <a href="https://pcsx2.net" target="_blank" rel="noreferrer">PCSX2</a>
+        <span aria-hidden="true"> · </span>
+        <a href="https://moonlightweb.top" target="_blank" rel="noreferrer">MoonlightWeb</a>
+      </span>
+    </footer>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

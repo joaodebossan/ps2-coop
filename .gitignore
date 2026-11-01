@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.ps2coop/
+runtime/
+dist/
+build/
+*.spec
+.pytest_cache/
+.venv/
