@@ -50,7 +50,7 @@ jobs:
         run: python build.py
       - name: Renomear para o release
         shell: pwsh
-        run: Copy-Item dist/ps2coop.exe dist/PS2Coop.exe
+        run: Rename-Item dist/ps2coop.exe PS2Coop.exe
       - name: Salvar executável
         uses: actions/upload-artifact@v4
         with:

@@ -63,9 +63,12 @@ def main() -> None:
     with zipfile.ZipFile(win_zip, "w", zipfile.ZIP_DEFLATED) as bundle:
         for path in source_files:
             add_to_zip(bundle, path)
-        exe = DIST / "ps2coop.exe"
-        if exe.is_file():
-            bundle.write(exe, "ps2coop.exe")
+        exe = next(
+            (candidate for candidate in (DIST / "PS2Coop.exe", DIST / "ps2coop.exe") if candidate.is_file()),
+            None,
+        )
+        if exe:
+            bundle.write(exe, "PS2Coop.exe")
 
     linux_tar = DIST / "PS2Coop-Linux.tar.gz"
     with tarfile.open(linux_tar, "w:gz") as bundle:

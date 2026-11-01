@@ -35,7 +35,7 @@ jobs:
       - name: Preparar executável Windows
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Copy-Item dist/ps2coop.exe dist/PS2Coop.exe
+        run: Rename-Item dist/ps2coop.exe PS2Coop.exe
       - name: Empacotar fonte
         run: python tools/package.py
       - name: Publicar artefato
