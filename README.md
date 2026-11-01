@@ -2,7 +2,7 @@
 
 Plataforma local para jogar **qualquer jogo de PS2 com co-op** (1 a 4 jogadores) com amigos, usando o PCSX2 e o MoonlightWeb. Coloque o app na pasta do jogo, execute uma vez e ele prepara o resto: baixa o emulador, instala o servidor de streaming, importa a BIOS que já estiver no PC, configura os controles e cria o ícone na área de trabalho.
 
-O projeto é um **app local** com interface no navegador, escrito só com a biblioteca padrão do Python. Também pode ser compilado como **executável único** (`ps2coop.exe`) para Windows ou binário para Linux. Os dois modos usam a mesma interface.
+O projeto é um **app local** com interface no navegador, escrito só com a biblioteca padrão do Python. Para o usuário final ele é distribuído como **um único arquivo**: `PS2Coop.exe` no Windows ou `PS2Coop-x86_64.AppImage` no Linux. Coloque esse arquivo na pasta do jogo e dê dois cliques — não precisa extrair, copiar pastas nem instalar Python.
 
 ---
 
@@ -32,56 +32,62 @@ O projeto é um **app local** com interface no navegador, escrito só com a bibl
 ### Windows
 
 - Windows 10 ou 11, x64 ou ARM64.
-- Não precisa ter Python instalado: `iniciar.bat` baixa um Python portátil (11 MB) na primeira execução.
+- Baixe **`PS2Coop.exe`**; não precisa ter Python instalado.
 - Aceite o aviso do Windows/UAC quando o instalador do PCSX2 ou do MoonlightWeb pedir permissão.
 
 ### Linux
 
-- Distribuição x64 com Python 3.10+ (Ubuntu 22.04+, Debian 12+, Fedora 36+, Mint 21+, Pop!\_OS etc.).
+- Distribuição x64: Ubuntu 22.04+, Debian 12+, Fedora 36+, Mint 21+, Pop!\_OS etc.
+- Baixe **`PS2Coop-x86_64.AppImage`**; não precisa ter Python instalado.
+- Na primeira vez, dê permissão de execução ao arquivo (Propriedades → Permitir execução, ou `chmod +x PS2Coop-x86_64.AppImage`). Depois é só dois cliques.
+- Se o AppImage não abrir por falta de FUSE: instale `libfuse2`/`libfuse2t64` ou rode `APPIMAGE_EXTRACT_AND_RUN=1 ./PS2Coop-x86_64.AppImage`.
 - No Debian/Ubuntu, o MoonlightWeb nativo precisa de instalação via `.deb` (o app faz isso com `pkexec`/`sudo`; aparecerá uma janela de autorização).
 - No Arch/Manjaro/Endeavour/Garuda, instale o MoonlightWeb pelo AUR (`paru -S moonlightweb-bin`) e clique em **Preparar** de novo.
 - Em sistemas imutáveis (Bazzite, SteamOS, Fedora Silverblue/Kinoite), use o guia oficial do MoonlightWeb para instalar em camada; o app avisa e não tenta forçar o gerenciador de pacotes.
-- O PCSX2 AppImage roda mesmo sem FUSE instalado (o app usa extração automática quando necessário).
-- Não precisa de Python no sistema se você usar o executável compilado.
-- Se o binário do pacote não rodar na sua distribuição (glibc antiga), use `PS2COOP_FROM_SOURCE=1 ./iniciar.sh` com Python 3.10+ instalado.
 
 ---
 
-## Como usar (o jeito simples)
+## Baixar e jogar (um arquivo só)
 
-1. Crie uma pasta para o jogo, por exemplo `~/Jogos/TimeSplitters 2`.
-2. Copie para ela:
-   - a ISO/CHD/CSO do jogo;
-   - os arquivos do PS2 Co-op (`app.py`, `ps2coop/`, `web/`, `assets/`, `iniciar.*` e, se for o caso, `runtime/`).
-3. Execute:
-   - **Windows:** dê dois cliques em `iniciar.bat`.
-   - **Linux:** `./iniciar.sh` ou dê dois cliques e escolha “Executar no terminal”.
-4. O navegador abre o portal. A preparação começa sozinha.
+1. Baixe o release mais recente: **[github.com/joaodebossan/ps2-coop/releases/latest](https://github.com/joaodebossan/ps2-coop/releases/latest)**.
+   - **Windows:** `PS2Coop.exe`
+   - **Linux:** `PS2Coop-x86_64.AppImage`
+2. Coloque o arquivo **na mesma pasta da ISO/CHD/CSO**. Não extraia nada.
+3. Abra com **dois cliques**.
+   - Linux: na primeira vez, marque “Permitir execução” ou rode `chmod +x PS2Coop-x86_64.AppImage`.
+4. O navegador abre o portal. A preparação começa sozinha: PCSX2, MoonlightWeb, BIOS, controles e atalho.
 5. Se a BIOS não for encontrada, envie o `.bin` na etapa **BIOS do PS2**.
 6. Escolha quantos jogadores, ligue/desligue **Host local** e clique em **1. Convidar amigos**.
 7. Envie link e PIN para cada amigo. Cada um abre o link, digita o PIN e aperta um botão no controle.
-8. Quando todos aparecerem como **conectado**, clique em **2. Iniciar jogo**.
+8. Quando todos aparecerem como **conectado**, clique em **3. Iniciar jogo**.
 
 O ícone na área de trabalho abre o mesmo portal e já encontra o servidor em execução. Depois da primeira preparação, você pode abrir o jogo só pelo ícone.
 
-### Pacotes prontos
+> O usuário final nunca precisa ver `app.py`, `ps2coop/`, `web/` ou `iniciar.*`: isso é só para desenvolvimento. O release entrega um único executável/AppImage.
 
-`make package` (ou `python3 tools/package.py`) gera em `dist/`:
+## Rodar do código-fonte (desenvolvimento)
 
-- **`PS2Coop-Windows.zip`** — fonte + `iniciar.bat`; se o Windows não tiver Python, o `.bat` baixa uma cópia portátil e depois o app baixa o resto.
-- **`PS2Coop-Linux.tar.gz`** — fonte + `iniciar.sh` + o binário `ps2coop-bin` já compilado quando ele existe. O script prefere o binário e, se ele não rodar na sua distro, tenta o código-fonte com Python.
-
-O executável de arquivo único também pode ser gerado separadamente com `python3 build.py`.
-
-### Se o app estiver em outra pasta
-
-O programa usa a pasta atual por padrão. Para apontar outra pasta de jogos:
+1. Crie uma pasta para o jogo, por exemplo `~/Jogos/TimeSplitters 2`.
+2. Copie para ela a ISO/CHD/CSO e os arquivos do projeto (`app.py`, `ps2coop/`, `web/`, `assets/`, `iniciar.*`; `runtime/` se já existir).
+3. Tenha Python 3.10+ e execute:
+   - **Windows:** `iniciar.bat`
+   - **Linux:** `./iniciar.sh`
+4. Para apontar outra pasta de jogos:
 
 ```bash
 python3 app.py --game "/caminho/da/pasta/do/jogo"
 ```
 
 No Windows: `iniciar.bat --game "D:\Jogos\Meu Jogo"`.
+
+### Pacotes de desenvolvimento
+
+`make package` (ou `python3 tools/package.py`) gera em `dist/`:
+
+- **`PS2Coop-Windows.zip`** — fonte + `iniciar.bat`; se o Windows não tiver Python, o `.bat` baixa uma cópia portátil.
+- **`PS2Coop-Linux.tar.gz`** — fonte + `iniciar.sh` + o binário `ps2coop-bin` quando ele existe.
+
+O executável único usado no release é gerado com `python3 build.py`; o AppImage, com `bash tools/build_appimage.sh`.
 
 ---
 
@@ -179,7 +185,7 @@ O executável não é assinado. Se o Windows mostrar “aplicativo desconhecido�
 
 ### O app não abre / porta ocupada
 
-O portal tenta a porta `8090` e, se estiver ocupada, uma porta livre. Se a janela do navegador não abrir, veja o endereço impresso no terminal e abra manualmente.
+O portal tenta a porta `8090` e, se estiver ocupada, uma porta livre. Se a janela do navegador não abrir, execute o app pelo terminal (`./PS2Coop-x86_64.AppImage --no-browser` ou `PS2Coop.exe --no-browser`) e abra o endereço impresso.
 
 ### Logs
 
@@ -189,7 +195,7 @@ O portal tenta a porta `8090` e, se estiver ocupada, uma porta livre. Se a janel
 
 ---
 
-## Compilar um executável
+## Compilar os arquivos únicos
 
 ```bash
 python3 -m pip install -r requirements-build.txt
@@ -201,7 +207,18 @@ Saída:
 - Linux: `dist/ps2coop`
 - Windows: `dist/ps2coop.exe`
 
-O executável embute `web/` e `assets/`; `runtime/` é criado ao lado dele na primeira execução e guarda PCSX2/MoonlightWeb/logs. O workflow em `.github/workflows/build.yml` compila nos dois sistemas.
+Para gerar o AppImage do Linux:
+
+```bash
+bash tools/build_appimage.sh
+# dist/PS2Coop-x86_64.AppImage
+```
+
+No Windows, o release renomeia `ps2coop.exe` para **`PS2Coop.exe`**. O executável embute `web/` e `assets/`; `runtime/` é criado ao lado dele na primeira execução e guarda PCSX2/MoonlightWeb/logs.
+
+Os workflows em `.github/workflows/`:
+- `build.yml` testa e compila nos dois sistemas a cada push.
+- `release.yml` é disparado por uma tag `v*` e publica `PS2Coop.exe` + `PS2Coop-x86_64.AppImage` no GitHub Releases.
 
 ---
 
@@ -218,7 +235,9 @@ Cobrem descoberta de jogos, perfil, INI/pads do PCSX2, BIOS, detecção/mapeamen
 ## Estrutura
 
 ```
-app.py                  entrada do portal
+app.py                  entrada do portal (código-fonte)
+PS2Coop.exe             release Windows: um arquivo só
+PS2Coop-x86_64.AppImage release Linux: um arquivo só
 ps2coop/
   app.py                servidor HTTP, API, auto setup, segurança
   pcsx2.py              instalação, BIOS, INI, pads, execução
@@ -230,9 +249,9 @@ ps2coop/
   config.py             caminhos, perfil, utilidades
 web/                    interface (HTML/CSS/JS, tema)
 assets/                 ícones PNG/ICO/SVG
-tools/                  geração de ícones e bootstrap do Python Windows
+tools/                  ícones, AppImage, pacotes e bootstrap do Python Windows
 tests/                  testes unitários
-iniciar.bat/.sh         inicialização para o usuário final
+iniciar.bat/.sh         inicialização pelo código-fonte (desenvolvimento)
 build.py                empacotamento PyInstaller
 ```
 

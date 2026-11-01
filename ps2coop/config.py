@@ -27,9 +27,16 @@ def app_root() -> Path:
     """Pasta do executável (ou do projeto, quando rodando do código).
 
     Num build de arquivo único do PyInstaller o executável fica ao lado da
-    pasta do jogo — é ali que runtime/ e .ps2coop/ devem viver.
+    pasta do jogo — é ali que runtime/ e .ps2coop/ devem viver. Dentro de um
+    AppImage, o executável real está num diretório temporário somente leitura;
+    o arquivo .AppImage é que está na pasta do jogo.
     """
     if getattr(sys, "frozen", False):
+        appimage = os.environ.get("APPIMAGE")
+        if appimage:
+            candidate = Path(appimage).expanduser()
+            if candidate.is_file():
+                return candidate.resolve().parent
         return Path(sys.executable).resolve().parent
     return Path(__file__).resolve().parent.parent
 
@@ -124,6 +131,15 @@ def game_dir_from_argv(argv: list[str] | None = None) -> Path:
             return Path(args[index + 1]).expanduser().resolve()
         if value.startswith("--game="):
             return Path(value.split("=", 1)[1]).expanduser().resolve()
+    if getattr(sys, "frozen", False):
+        # O usuário coloca o executável na pasta do jogo e dá dois cliques.
+        # O diretório de trabalho do Windows Explorer nem sempre é o do .exe.
+        appimage = os.environ.get("APPIMAGE")
+        if appimage:
+            candidate = Path(appimage).expanduser()
+            if candidate.is_file():
+                return candidate.resolve().parent
+        return Path(sys.executable).resolve().parent
     return Path.cwd().resolve()
 
 

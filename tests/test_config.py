@@ -34,6 +34,30 @@ class ConfigTest(unittest.TestCase):
         self.assertIn(config.platform_label(), {"windows", "linux", "macos"})
         self.assertTrue(config.platform_name())
 
+    def test_frozen_single_file_uses_its_own_folder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            exe = root / "PS2Coop.exe"
+            appimage = root / "jogo" / "PS2Coop-x86_64.AppImage"
+            appimage.parent.mkdir()
+            exe.write_bytes(b"exe")
+            appimage.write_bytes(b"appimage")
+            with patch.object(config.sys, "frozen", True, create=True), patch.object(
+                config.sys, "executable", str(exe)
+            ), patch.dict(os.environ, {}, clear=False):
+                os.environ.pop("APPIMAGE", None)
+                self.assertEqual(config.app_root(), root)
+                self.assertEqual(config.game_dir_from_argv([]), root)
+                self.assertEqual(
+                    config.game_dir_from_argv(["--game", str(appimage.parent)]),
+                    appimage.parent.resolve(),
+                )
+            with patch.object(config.sys, "frozen", True, create=True), patch.object(
+                config.sys, "executable", str(exe)
+            ), patch.dict(os.environ, {"APPIMAGE": str(appimage)}):
+                self.assertEqual(config.app_root(), appimage.parent)
+                self.assertEqual(config.game_dir_from_argv([]), appimage.parent)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -145,6 +145,11 @@ def _desktop_dirs() -> list[Path]:
 
 def _launch_target() -> tuple[Path, list[str]]:
     if getattr(sys, "frozen", False):
+        appimage = os.environ.get("APPIMAGE")
+        if appimage:
+            candidate = Path(appimage).expanduser()
+            if candidate.is_file():
+                return candidate.resolve(), []
         return Path(sys.executable).resolve(), []
     app_path = app_root() / "app.py"
     if IS_WINDOWS:

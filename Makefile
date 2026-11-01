@@ -1,4 +1,4 @@
-.PHONY: run test build package icons clean
+.PHONY: run test build appimage package icons clean
 
 run:
 	python3 app.py --game .
@@ -8,6 +8,9 @@ test:
 
 build:
 	python3 build.py
+
+appimage: build
+	bash tools/build_appimage.sh
 
 package:
 	python3 tools/package.py

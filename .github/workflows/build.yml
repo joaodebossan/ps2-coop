@@ -24,7 +24,19 @@ jobs:
         run: python -m pip install -r requirements-build.txt
       - name: Compilar
         run: python build.py
-      - name: Empacotar
+      - name: Dependências do AppImage
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y squashfs-tools
+      - name: Gerar AppImage
+        if: runner.os == 'Linux'
+        run: bash tools/build_appimage.sh
+      - name: Preparar executável Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Copy-Item dist/ps2coop.exe dist/PS2Coop.exe
+      - name: Empacotar fonte
         run: python tools/package.py
       - name: Publicar artefato
         uses: actions/upload-artifact@v4
@@ -33,6 +45,8 @@ jobs:
           path: |
             dist/ps2coop
             dist/ps2coop.exe
+            dist/PS2Coop.exe
+            dist/PS2Coop-x86_64.AppImage
             dist/PS2Coop-Windows.zip
             dist/PS2Coop-Linux.tar.gz
           if-no-files-found: ignore

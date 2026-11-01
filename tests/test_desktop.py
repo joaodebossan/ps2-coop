@@ -63,6 +63,17 @@ class DesktopTest(unittest.TestCase):
         if desktop.IS_WINDOWS:
             self.assertEqual(desktop.safe_title('a:b?c*'), "a b c")
 
+    def test_appimage_is_the_persistent_shortcut_target(self):
+        appimage = self.root / "Jogo" / "PS2Coop-x86_64.AppImage"
+        appimage.parent.mkdir()
+        appimage.write_bytes(b"appimage")
+        with patch.object(desktop.sys, "frozen", True, create=True), patch.dict(
+            os.environ, {"APPIMAGE": str(appimage)}
+        ):
+            target, prefix = desktop._launch_target()
+        self.assertEqual(target, appimage.resolve())
+        self.assertEqual(prefix, [])
+
 
 if __name__ == "__main__":
     unittest.main()

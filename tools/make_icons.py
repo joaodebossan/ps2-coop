@@ -143,6 +143,8 @@ def main() -> None:
     web.mkdir(exist_ok=True)
     icon.save(assets / "icon.png")
     icon.save(web / "icon.png")
+    icon.resize((256, 256), Image.Resampling.LANCZOS).save(assets / "icon-256.png")
+    icon.resize((256, 256), Image.Resampling.LANCZOS).save(web / "icon-256.png")
     icon.save(assets / "icon.ico", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
     print("Ícones gerados em assets/ e web/.")
 

@@ -24,7 +24,9 @@ COMMON = [
     "ps2coop",
     "web",
     "assets",
-    "tools/bootstrap-python.ps1",
+    "tools",
+    "requirements-build.txt",
+    "Makefile",
 ]
 
 
