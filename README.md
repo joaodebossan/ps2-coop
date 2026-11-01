@@ -47,7 +47,7 @@ O projeto é um **app local** com interface no navegador, escrito só com a bibl
 
 ---
 
-## Baixar e jogar (um arquivo só)
+## Baixar e jogar
 
 1. Baixe o release mais recente: **[github.com/joaodebossan/ps2-coop/releases/latest](https://github.com/joaodebossan/ps2-coop/releases/latest)**.
    - **Windows:** `PS2Coop.exe`
