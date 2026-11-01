@@ -12,7 +12,7 @@ from typing import Any
 
 APP_ID = "ps2coop"
 APP_NAME = "PS2 Co-op"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 IS_WINDOWS = os.name == "nt"
 IS_LINUX = sys.platform.startswith("linux")

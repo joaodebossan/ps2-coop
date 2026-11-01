@@ -24,7 +24,7 @@
     document.documentElement.dataset.themeMode = value;
     document.documentElement.style.colorScheme = effective;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", effective === "dark" ? "#24252c" : "#f2eee6");
+    if (meta) meta.setAttribute("content", effective === "dark" ? "#24252c" : "#e5e8ed");
     if (persist) {
       try {
         localStorage.setItem(KEY, value);

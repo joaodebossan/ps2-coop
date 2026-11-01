@@ -20,7 +20,7 @@ O projeto é um **app local** com interface no navegador, escrito só com a bibl
 - Inicia o PCSX2 em tela cheia quando você clica em **Iniciar jogo**, já com os convidados conectados e os controles mapeados.
 - Faz **backup automático do memory card** ao parar o jogo; permite restaurar backups antigos.
 - Cria o **ícone na área de trabalho** e no menu de aplicativos.
-- Tem **tema claro, tema escuro acinzentado e modo sistema**.
+- Tem **tema prata claro, tema preto/cinza escuro e modo sistema**, com azul degradê do logo PS2 nos dois.
 - Não envia telemetria e só escuta em `127.0.0.1`.
 
 > BIOS e ISOs **não** são baixadas nem distribuídas. Use a BIOS extraída do seu próprio console e cópias dos seus próprios jogos. O app é só a ferramenta de preparação e conexão.
@@ -114,10 +114,10 @@ convidar  →  amigos entram e conectam o controle  →  iniciar jogo
 No topo e em **Preferências → Tema** você escolhe:
 
 - **Sistema** — segue o tema do sistema operacional;
-- **Claro** — fundo quente, tipo papel;
-- **Escuro** — cinza grafite, não preto puro.
+- **Claro** — prata metálico, inspirado no PS2 prata;
+- **Escuro** — preto/cinza grafite, inspirado no PS2 preto (mantém o cinza atual).
 
-A escolha fica salva no navegador (`localStorage`). O tema não muda o PCSX2.
+Os dois usam o **azul degradê** do símbolo PS2 nos botões principais, ícones, foco e detalhes. A escolha fica salva no navegador (`localStorage`). O tema não muda o PCSX2.
 
 ---
 

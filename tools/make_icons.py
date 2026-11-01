@@ -41,7 +41,7 @@ def rounded_mask(size: int, radius: int) -> Image.Image:
 
 def draw_icon() -> Image.Image:
     canvas = Image.new("RGBA", (C, C), (0, 0, 0, 0))
-    bg = gradient(C, (53, 55, 65), (31, 32, 39)).convert("RGBA")
+    bg = gradient(C, (45, 48, 57), (21, 22, 27)).convert("RGBA")
     mask = rounded_mask(C, int(C * 0.21))
     canvas.paste(bg, (0, 0), mask)
 
@@ -54,11 +54,11 @@ def draw_icon() -> Image.Image:
     # brilho suave no canto superior esquerdo
     glow = Image.new("RGBA", (C, C), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
-    gd.ellipse(box([-220, -300, 620, 480]), fill=(255, 220, 150, 22))
+    gd.ellipse(box([-220, -300, 620, 480]), fill=(46, 155, 255, 28))
     canvas.alpha_composite(glow)
 
     # borda interna
-    draw.rounded_rectangle(box([10, 10, 1014, 1014]), radius=int(205 * unit), outline=(92, 95, 112, 150), width=int(5 * unit))
+    draw.rounded_rectangle(box([10, 10, 1014, 1014]), radius=int(205 * unit), outline=(112, 120, 136, 160), width=int(5 * unit))
 
     # arcos de rede no canto superior direito
     for i, (r, alpha) in enumerate([(92, 210), (150, 170), (208, 120)]):
@@ -66,14 +66,14 @@ def draw_icon() -> Image.Image:
             box([1014 - r * 2, 34, 1014 + r * 0.9, 34 + r * 2]),
             start=198,
             end=342,
-            fill=(126, 220, 166, alpha),
+            fill=(80, 170, 255, alpha),
             width=int(15 * unit),
         )
 
     # alças do controle
-    gold_top = (243, 210, 136, 255)
-    gold_bottom = (209, 158, 63, 255)
-    body = gradient(C, gold_top[:3], gold_bottom[:3]).convert("RGBA")
+    silver_top = (243, 246, 250, 255)
+    silver_bottom = (154, 162, 176, 255)
+    body = gradient(C, silver_top[:3], silver_bottom[:3]).convert("RGBA")
     grip_mask = Image.new("L", (C, C), 0)
     gm = ImageDraw.Draw(grip_mask)
     gm.rounded_rectangle(box([142, 452, 432, 846]), radius=int(142 * unit), fill=255)
@@ -87,16 +87,16 @@ def draw_icon() -> Image.Image:
     bm.rounded_rectangle(box([188, 344, 836, 690]), radius=int(155 * unit), fill=255)
     canvas.paste(body, (0, 0), body_mask)
     draw = ImageDraw.Draw(canvas)
-    draw.rounded_rectangle(box([188, 344, 836, 690]), radius=int(155 * unit), outline=(92, 60, 12, 255), width=int(7 * unit))
+    draw.rounded_rectangle(box([188, 344, 836, 690]), radius=int(155 * unit), outline=(55, 62, 76, 255), width=int(7 * unit))
 
     # sombra interna na parte de baixo do corpo
     shade = Image.new("RGBA", (C, C), (0, 0, 0, 0))
     sd = ImageDraw.Draw(shade)
-    sd.ellipse(box([190, 610, 834, 760]), fill=(92, 60, 12, 28))
+    sd.ellipse(box([190, 610, 834, 760]), fill=(35, 42, 55, 30))
     canvas.alpha_composite(shade)
     draw = ImageDraw.Draw(canvas)
 
-    dark = (39, 30, 18, 255)
+    dark = (27, 30, 37, 255)
     # d-pad
     draw.rounded_rectangle(box([288, 420, 354, 612]), radius=int(18 * unit), fill=dark)
     draw.rounded_rectangle(box([234, 486, 408, 546]), radius=int(18 * unit), fill=dark)
@@ -108,17 +108,17 @@ def draw_icon() -> Image.Image:
         ([630, 493], (200, 159, 244, 255)),
     ]
     for (cx, cy), color in buttons:
-        draw.ellipse(box([cx - 34, cy - 34, cx + 34, cy + 34]), fill=color, outline=(55, 35, 12, 255), width=int(5 * unit))
+        draw.ellipse(box([cx - 34, cy - 34, cx + 34, cy + 34]), fill=color, outline=(28, 32, 40, 255), width=int(5 * unit))
     # analógicos
     for cx in (446, 548):
-        draw.ellipse(box([cx - 45, 575, cx + 45, 665]), fill=(63, 48, 27, 255), outline=(34, 25, 13, 255), width=int(5 * unit))
-        draw.ellipse(box([cx - 24, 596, cx + 24, 644]), fill=(125, 95, 45, 255))
+        draw.ellipse(box([cx - 45, 575, cx + 45, 665]), fill=(38, 43, 53, 255), outline=(24, 27, 34, 255), width=int(5 * unit))
+        draw.ellipse(box([cx - 24, 596, cx + 24, 644]), fill=(110, 119, 133, 255))
     # select/start
     draw.rounded_rectangle(box([430, 704, 500, 726]), radius=int(11 * unit), fill=dark)
     draw.rounded_rectangle(box([524, 704, 594, 726]), radius=int(11 * unit), fill=dark)
 
     # pequeno selo PS2 no topo esquerdo
-    draw.rounded_rectangle(box([110, 92, 330, 196]), radius=int(26 * unit), fill=(32, 33, 40, 210), outline=(120, 96, 52, 220), width=int(4 * unit))
+    draw.rounded_rectangle(box([110, 92, 330, 196]), radius=int(26 * unit), fill=(19, 21, 27, 235), outline=(46, 155, 255, 235), width=int(4 * unit))
     font = None
     for candidate in (
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
@@ -130,7 +130,11 @@ def draw_icon() -> Image.Image:
             break
         except OSError:
             continue
-    draw.text((int(142 * unit), int(106 * unit)), "PS2", font=font, fill=(235, 203, 130, 255))
+    # texto PS2 com degradê azul, como o logo do console
+    text_mask = Image.new("L", (C, C), 0)
+    ImageDraw.Draw(text_mask).text((int(142 * unit), int(106 * unit)), "PS2", font=font, fill=255)
+    blue = gradient(C, (12, 58, 150), (106, 205, 255)).convert("RGBA")
+    canvas.paste(blue, (0, 0), text_mask)
 
     return canvas.resize((SIZE, SIZE), Image.Resampling.LANCZOS)
 

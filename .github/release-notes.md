@@ -1,5 +1,7 @@
 # PS2 Co-op — um arquivo só
 
+**Novo nesta versão:** tema prata (claro) e preto/cinza (escuro), com o azul degradê do logo PS2 nos botões, ícones e detalhes.
+
 Baixe **um** arquivo abaixo e coloque na mesma pasta da sua ISO/CHD/CSO:
 
 | Plataforma | Arquivo |
